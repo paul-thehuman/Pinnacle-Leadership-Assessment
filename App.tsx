@@ -22,7 +22,7 @@ const AssessmentGrid: React.FC<{
 
   return (
     <div className="space-y-10">
-      {Object.entries(grouped).map(([dim, items]) => (
+      {(Object.entries(grouped) as [string, Statement[]][]).map(([dim, items]) => (
         <div key={dim} className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
           {/* Dimension Header */}
           <div className="bg-slate-100 px-6 py-4 border-b border-slate-200 flex items-center gap-3">
@@ -236,6 +236,8 @@ function App() {
   }
 
   if (step === 'reflection') {
+    const isValid = reflections.strengths.trim().length > 0 && reflections.limitations.trim().length > 0;
+
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col">
         <Header />
@@ -253,7 +255,7 @@ function App() {
                   My Key Strengths
                 </label>
                 <textarea
-                  className="w-full p-4 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-32"
+                  className="w-full p-4 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-32 bg-slate-50 text-slate-800"
                   placeholder="Where do you add the most value? (e.g., 'I am calm in a crisis', 'I build strong networks')"
                   value={reflections.strengths}
                   onChange={(e) => setReflections(prev => ({ ...prev, strengths: e.target.value }))}
@@ -265,7 +267,7 @@ function App() {
                   My Perceived Limitations / Derailers
                 </label>
                 <textarea
-                  className="w-full p-4 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-32"
+                  className="w-full p-4 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-32 bg-slate-50 text-slate-800"
                   placeholder="What holds you back? (e.g., 'I avoid conflict', 'I analyze too long')"
                   value={reflections.limitations}
                   onChange={(e) => setReflections(prev => ({ ...prev, limitations: e.target.value }))}
@@ -276,9 +278,9 @@ function App() {
             <div className="mt-10 flex justify-end">
                <button
                 onClick={handleGenerateReport}
-                disabled={!reflections.strengths || !reflections.limitations}
+                disabled={!isValid}
                 className={`flex items-center gap-2 px-8 py-4 rounded-md font-semibold shadow-lg transition-all ${
-                  (reflections.strengths && reflections.limitations)
+                  isValid
                     ? 'bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-1' 
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
